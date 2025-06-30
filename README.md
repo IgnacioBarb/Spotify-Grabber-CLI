@@ -59,6 +59,14 @@ The first time you run the script, it will prompt you to enter these credentials
 
 ## Usage
 
+You can see all available options and flags by running:
+
+```bash
+python main.py --help
+```
+
+Example usage:
+
 ```bash
 python main.py --playlist "SPOTIFY_PLAYLIST_URL" [--output FOLDER] [--format mp3] [--workers 4] [--log] [--no-report]
 ```
