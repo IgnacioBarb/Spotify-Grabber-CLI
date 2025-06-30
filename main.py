@@ -2,7 +2,6 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import yt_dlp
 import pandas as pd
-from tqdm import tqdm
 from ytmusicapi import YTMusic
 import re
 from tabulate import tabulate
