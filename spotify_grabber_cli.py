@@ -74,6 +74,7 @@ def process_track(track, args, ytmusic, sp, download_opts, final_path, playlist_
     artist_name = track['artists'][0]['name']
     duration_ms = track['duration_ms']
     seconds = int(duration_ms / 1000)
+    album_name = track.get('album', {}).get('name', '')
 
     # Buscar la canción en YouTube Music
     search_results = ytmusic.search(track_name, filter="songs", limit=10)
@@ -130,9 +131,9 @@ def process_track(track, args, ytmusic, sp, download_opts, final_path, playlist_
             success = True
             break
         except Exception as e:
-            log_error(final_path, f"Download error for {track_name}, attempt {attempt+1}: {e}\n{traceback.format_exc()}")
+            log_error(final_path, f"Download error for {track_name}, attempt {attempt+1}: {e}\n{traceback.format_exc()}", args.log)
     if not success:
-        log_error(final_path, f"Failed to download {track_name} after 3 attempts.")
+        log_error(final_path, f"Failed to download {track_name} after 3 attempts.", args.log)
         result = {
             'track_name': track_name,
             'status': "404",
@@ -148,9 +149,9 @@ def process_track(track, args, ytmusic, sp, download_opts, final_path, playlist_
         if os.path.exists(original_file):
             os.rename(original_file, desired_file)
         else:
-            log_error(final_path, f"File not found to rename: {original_file}")
+            log_error(final_path, f"File not found to rename: {original_file}", args.log)
     except Exception as e:
-        log_error(final_path, f"Error renaming file: {e}\n{traceback.format_exc()}")
+        log_error(final_path, f"Error renaming file: {e}\n{traceback.format_exc()}", args.log)
 
     # Descargar portada y agregar metadatos (solo para mp3)
     if args.format == "mp3":
@@ -169,7 +170,7 @@ def process_track(track, args, ytmusic, sp, download_opts, final_path, playlist_
 
             audio.tags.add(TIT2(encoding=3, text=track_name))
             audio.tags.add(TPE1(encoding=3, text=artist_name))
-            audio.tags.add(TALB(encoding=3, text=playlist_name))
+            audio.tags.add(TALB(encoding=3, text=album_name))
             with open(cover_path, 'rb') as albumart:
                 audio.tags.add(
                     APIC(
@@ -185,7 +186,7 @@ def process_track(track, args, ytmusic, sp, download_opts, final_path, playlist_
                 os.remove(cover_path)
         except Exception as e:
             status.append("505")  # Añadir código de error de metadatos
-            log_error(final_path, f"Error processing metadata for {track_name}: {e}\n{traceback.format_exc()}")
+            log_error(final_path, f"Error processing metadata for {track_name}: {e}\n{traceback.format_exc()}", args.log)
 
     result = {
         'track_name': track_name,
@@ -337,8 +338,6 @@ Status codes:
             print(Fore.WHITE + "No errors were logged.")
     print(Fore.CYAN + "="*50 + "\n")
 
-# Recuerda pasar args.log en cada llamada a log_error:
-# log_error(final_path, "mensaje", args.log)
 
 if __name__ == "__main__":
     main()
