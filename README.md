@@ -1,6 +1,8 @@
-# spotify2ytmusic-cli
+# Spotify Grabber CLI
 
-A command-line tool to download Spotify playlists as audio files from YouTube Music, with metadata and cover art.
+**Spotify Grabber CLI** is a Python command-line utility that downloads entire Spotify playlists as local audio files (mp3, flac, wav, or m4a) with complete metadata and cover art.
+It leverages the Spotify API for playlist parsing and YouTube Music as the audio source, supports parallel downloads, customizable output directories, error logging, and detailed reporting.
+Requires Spotify API credentials and FFmpeg
 
 ## Features
 
@@ -12,6 +14,23 @@ A command-line tool to download Spotify playlists as audio files from YouTube Mu
 - Error logging and customizable report generation
 
 ## Installation
+
+### Clone the repository
+
+```bash
+git clone https://github.com/IgnacioBarb/Spotify-Grabber-CLI.git
+cd Spotify-Grabber-CLI
+```
+
+### (Recommended) Create and activate a virtual environment
+
+```bash
+python -m venv env
+# On Windows:
+env\Scripts\activate
+# On macOS/Linux:
+source env/bin/activate
+```
 
 ### System Requirements
 
@@ -27,25 +46,13 @@ A command-line tool to download Spotify playlists as audio files from YouTube Mu
     ```
   - Windows:
     - Download from https://ffmpeg.org/download.html and add it to your PATH
-    - For an easy way to install FFmpeg, I recommend checking out [Gyan.dev FFmpeg builds](https://www.gyan.dev/ffmpeg/builds/):
+    - For an easy way to install FFmpeg, I recommend checking out [Gyan.dev FFmpeg builds](https://www.gyan.dev/ffmpeg/builds/)
+
 ### Python dependencies
 
 Install the required Python packages with:
 ```bash
 pip install -r requirements.txt
-```
-If you do not have a `requirements.txt`, you can create one with this content:
-
-```
-yt-dlp
-spotipy
-ytmusicapi
-pandas
-tabulate
-mutagen
-requests
-colorama
-rich
 ```
 
 ### Spotify Credentials
@@ -59,22 +66,22 @@ The first time you run the script, it will prompt you to enter these credentials
 
 ## Usage
 
-You can see all available options and flags by running:
+For all available options and flags, run:
 
 ```bash
-python main.py --help
+python spotify_grabber_cli.py --help
 ```
 
 Example usage:
 
 ```bash
-python main.py --playlist "SPOTIFY_PLAYLIST_URL" [--output FOLDER] [--format mp3] [--workers 4] [--log] [--no-report]
+python spotify_grabber_cli.py --playlist "SPOTIFY_PLAYLIST_URL" [--output FOLDER] [--format mp3] [--workers 4] [--log] [--no-report]
 ```
 
 ### Example
 
 ```bash
-python main.py --playlist "https://open.spotify.com/playlist/..." --format mp3 --workers 8 --log
+python spotify_grabber_cli.py --playlist "https://open.spotify.com/playlist/..." --format mp3 --workers 8 --log
 ```
 
 ## License
