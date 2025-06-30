@@ -1,0 +1,9 @@
+yt-dlp
+spotipy
+ytmusicapi
+pandas
+tabulate
+mutagen
+requests
+colorama
+rich
