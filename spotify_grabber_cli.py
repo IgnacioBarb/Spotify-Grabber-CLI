@@ -116,7 +116,7 @@ def process_track(track, args, ytmusic, sp, download_opts, final_path, playlist_
     url = f"https://music.youtube.com/watch?v={video_id}" if video_id else ""
 
     # Nombre del archivo destino
-    out_file = os.path.join(final_path, f"{best_match['title']}.{args.format}")
+    out_file = os.path.join(final_path, f"{track['track_index']}. {best_match['title']}.{args.format}")
 
     # Reintentar la descarga hasta 3 veces
     success = False
@@ -144,10 +144,9 @@ def process_track(track, args, ytmusic, sp, download_opts, final_path, playlist_
     # Renombrar el archivo descargado
     try:
         original_file = os.path.join(final_path, f"{download_filename}.{args.format}")
-        desired_file = os.path.join(final_path, f"{best_match['title']}.{args.format}");
 
         if os.path.exists(original_file):
-            os.rename(original_file, desired_file)
+            os.rename(original_file, out_file)
         else:
             log_error(final_path, f"File not found to rename: {original_file}", args.log)
     except Exception as e:
@@ -163,7 +162,7 @@ def process_track(track, args, ytmusic, sp, download_opts, final_path, playlist_
                 with open(cover_path, 'wb') as f:
                     f.write(r.content)
 
-            audio = MP3(desired_file, ID3=ID3)
+            audio = MP3(out_file, ID3=ID3)
 
             if audio.tags is None:
                 audio.add_tags()
@@ -275,10 +274,20 @@ def main():
 
     # Obtener todos los tracks de la playlist
     all_tracks = []
+    idx = 1
+    total_digits = len(str(total_tracks))
     while offset < total_tracks:
-        results_spotify = sp.playlist_items(playlist_id, offset=offset, limit=limit)
-        all_tracks.extend([item['track']
-                          for item in results_spotify['items'] if item['track']])
+        results_spotify = sp.playlist_items(
+            playlist_id, offset=offset, limit=limit)
+        for item in results_spotify['items']:
+            track = item['track']
+            if track:
+                track = track.copy()  # avoid mutating original
+                # Añadir ceros a la izquierda según el total de canciones
+                track['track_index'] = str(idx).zfill(total_digits)
+                # print(str(idx).zfill(total_digits))
+                all_tracks.append(track)
+                idx += 1
         offset += limit
 
     # Descarga en paralelo usando ThreadPoolExecutor
